@@ -1,0 +1,79 @@
+<html><head><meta charset="utf-8"><title>cloud-itonami-isic-3821 &middot; treatment and disposal of non-hazardous waste</title><style>
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ok { color: #137a3f; }
+body { font-family: system-ui,-apple-system,sans-serif; margin: 0; color: #1a1a1a; background: #fafafa; }
+header.bar { display: flex; align-items: center; gap: 12px; padding: 12px 20px; background: #fff; border-bottom: 1px solid #e5e5e5; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #f0f0f0; }
+h2 { margin-top: 0; font-size: 15px; }
+.warn { color: #b25c00; background: #fff8e1; padding: 2px 6px; border-radius: 4px; }
+main { max-width: 980px; margin: 24px auto; padding: 0 20px; }
+header.bar h1 { font-size: 18px; margin: 0; font-weight: 600; }
+.muted { color: #888; font-size: 13px; }
+.critical { color: #fff; background: #b3261e; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+.card { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+.err { color: #b3261e; background: #fbe9e7; padding: 2px 6px; border-radius: 4px; }
+th { font-weight: 600; color: #555; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+header.bar .badge { margin-left: auto; font-size: 12px; color: #666; }
+code { font-size: 12px; background: #f4f4f4; padding: 1px 4px; border-radius: 3px; }
+</style></head><body>
+<header class="bar">
+  <h1>Treatment and disposal of non-hazardous waste (ISIC 3821) — Operator Console</h1>
+  <span class="badge">read-only sample · governor-gated · sorting/incineration-equipment control and environmental-permit decisions always out of scope</span>
+</header>
+<main>
+  <section class="card">
+    <h2>Facilities</h2>
+    <p class="muted">Demo snapshot — build-time-generated from <code>wasteops.store</code> via <code>wasteops.render-html</code> (<code>clojure -M:dev:render-html</code>), regenerated nightly.</p>
+    <table>
+      <thead><tr><th>Facility</th><th>Name</th><th>Registration</th><th>Verification</th><th>Last op status</th></tr></thead>
+      <tbody>
+        <tr><td>incin-facility-3</td><td>Hillside Waste-to-Energy Incineration Facility (recertification lapsed)</td><td><span class="ok">registered</span></td><td><span class="critical">unverified</span></td><td><span class="critical">HARD hold &middot; facility-unverified</span></td></tr>
+        <tr><td>landfill-north-1</td><td>North Ridge Sanitary Landfill</td><td><span class="ok">registered</span></td><td><span class="ok">verified</span></td><td><span class="critical">HARD hold &middot; scope-excluded</span></td></tr>
+        <tr><td>sorting-facility-2</td><td>Eastside Materials Recovery &amp; Sorting Facility</td><td><span class="ok">registered</span></td><td><span class="ok">verified</span></td><td><span class="ok">committed</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="card">
+    <h2>Committed coordination records</h2>
+    <p class="muted">Facility-record logging, maintenance scheduling and outbound shipment-coordination proposals this actor actually committed to the SSoT this run.</p>
+    <table>
+      <thead><tr><th>Op</th><th>Facility</th><th>Payload</th></tr></thead>
+      <tbody>
+        <tr><td><code>log-facility-record</code></td><td>landfill-north-1</td><td>{:facility-id "landfill-north-1", :intake-tons 42.5, :shift "day"}</td></tr>
+        <tr><td><code>schedule-maintenance</code></td><td>sorting-facility-2</td><td>{:facility-id "sorting-facility-2", :equipment "sorting-conveyor-4", :window "2026-07-22"}</td></tr>
+        <tr><td><code>coordinate-shipment</code></td><td>sorting-facility-2</td><td>{:facility-id "sorting-facility-2", :material "recovered-cardboard", :destination "recycler-a"}</td></tr>
+        <tr><td><code>flag-safety-concern</code></td><td>landfill-north-1</td><td>{:facility-id "landfill-north-1", :concern "leachate seepage observed", :confidence 0.95, :approved-by "op-1"}</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="card">
+    <h2>Action gate (WasteTreatmentOpsGovernor)</h2>
+    <p class="muted">HARD holds cannot be overridden by a human approver. Facility registration/verification, proposal :effect and sorting/incineration-equipment-control &amp; environmental-permit-authority scope exclusions are independently re-checked on every proposal, never trusted from the advisor's own claim; a safety concern always needs a human facility supervisor to look at it, at every rollout phase.</p>
+    <table>
+      <thead><tr><th>Op</th><th>Gate</th></tr></thead>
+      <tbody>
+        <tr><td><code>:log-facility-record</code></td><td><span class="ok">phase-3 auto-commit when clean -- intake-volume/sorting-yield/disposal-method data logging</span></td></tr>
+        <tr><td><code>:schedule-maintenance</code></td><td><span class="ok">phase-3 auto-commit when clean &middot; independently re-scanned for incineration/sorting-equipment-control scope drift on every proposal</span></td></tr>
+        <tr><td><code>:coordinate-shipment</code></td><td><span class="ok">phase-3 auto-commit when clean &middot; :effect independently re-checked as :propose on every proposal, never trusted</span></td></tr>
+        <tr><td><code>:flag-safety-concern</code></td><td><span class="warn">ALWAYS human approval &middot; never a member of any phase's :auto set -- a safety concern always needs a human to look at it</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="card">
+    <h2>Audit ledger (this run)</h2>
+    <p class="muted">Append-only decision-fact log — every proposal, hold and commit this scenario produced.</p>
+    <table>
+      <thead><tr><th>Fact</th><th>Op</th><th>Facility</th><th>Basis</th></tr></thead>
+      <tbody>
+        <tr><td>committed</td><td><code>log-facility-record</code></td><td>landfill-north-1</td><td>landfill-north-1</td></tr>
+        <tr><td>committed</td><td><code>schedule-maintenance</code></td><td>sorting-facility-2</td><td>sorting-facility-2</td></tr>
+        <tr><td>committed</td><td><code>coordinate-shipment</code></td><td>sorting-facility-2</td><td>sorting-facility-2</td></tr>
+        <tr><td>committed</td><td><code>flag-safety-concern</code></td><td>landfill-north-1</td><td>landfill-north-1</td></tr>
+        <tr><td>governor-hold</td><td><code>log-facility-record</code></td><td>incin-facility-3</td><td>facility-unverified</td></tr>
+        <tr><td>governor-hold</td><td><code>coordinate-shipment</code></td><td>landfill-north-1</td><td>effect-not-propose</td></tr>
+        <tr><td>governor-hold</td><td><code>schedule-maintenance</code></td><td>landfill-north-1</td><td>scope-excluded</td></tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+</body></html>
