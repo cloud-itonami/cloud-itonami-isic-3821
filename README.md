@@ -79,9 +79,9 @@ still to come — matching `wasteops.governor`'s own
 ## Development
 
 ```bash
-clojure -M:test   # run the full suite
-clojure -M:run    # walk the demo scenarios (wasteops.sim)
-clojure -M:lint    # clj-kondo
+kbb -M:test   # run the full suite
+kbb -M:run    # walk the demo scenarios (wasteops.sim)
+kbb -M:lint    # clj-kondo
 ```
 
 AGPL-3.0-or-later, forkable by any qualified operator. Part of cloud-itonami.
