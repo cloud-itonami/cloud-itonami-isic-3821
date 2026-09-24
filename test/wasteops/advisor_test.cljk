@@ -1,5 +1,5 @@
 (ns wasteops.advisor-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [wasteops.advisor :as advisor]
             [wasteops.store :as store]))
 

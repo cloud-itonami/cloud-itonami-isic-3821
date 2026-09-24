@@ -1,6 +1,6 @@
 (ns wasteops.store-contract-test
   "The Store contract as executable tests."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [wasteops.store :as store]))
 
 (deftest seed-db-read-parity
